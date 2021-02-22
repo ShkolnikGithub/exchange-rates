@@ -1,18 +1,13 @@
 package ru.mshkolniy.exchangerates.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
-import ru.mshkolniy.exchangerates.model.RateMainJSON;
 import ru.mshkolniy.exchangerates.model.Rate;
 import ru.mshkolniy.exchangerates.service.RateService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,37 +21,34 @@ public class RateController {
     private RateService rateService;
 
     @GetMapping("latest.json")
-    RateMainJSON getAllLatestRates(@RequestParam String app_id) {
-        RateMainJSON rates = rateService.getAllLatestRates(APP_ID);
+    Rate getLatestRates(@RequestParam String app_id) {
+        Rate rates = rateService.getLatestRates(APP_ID);
         return rates;
     }
 
-    @GetMapping("historical/{date}.json")
-    RateMainJSON getAllYesterdaysRates(@PathVariable("date") String date, @RequestParam String app_id) {
-        RateMainJSON rates = rateService.getAllYesterdaysRates(YESTERDAY.toString(), APP_ID);
+    @GetMapping("yesterday")
+    Rate getYesterdaysRates(@RequestParam String app_id) {
+        Rate rates = rateService.getYesterdaysRates(YESTERDAY.toString(), APP_ID);
         return rates;
     }
 
     @GetMapping("compare")
     String compareCurrency(@RequestParam String currency) {
-        Rate todays = rateService.getAllLatestRates(APP_ID).getRates();
-        Rate yesterdays = rateService.getAllYesterdaysRates("2021-02-21", APP_ID).getRates();
+        Map<String, BigDecimal> todays = rateService.getLatestRates(APP_ID).getRates();
+        Map<String, BigDecimal> yesterdays = rateService.getHistoricalRates(YESTERDAY.toString(), APP_ID).getRates();
 
-        if (todays.get(currency).compareTo(yesterdays.get(currency)) > 0) {
+        if (todays.get(currency.toUpperCase()).compareTo(yesterdays.get(currency.toUpperCase())) < 0) {
             return "rich";
-        } else if (todays.get(currency).compareTo(yesterdays.get(currency)) < 0) {
+        } else if (todays.get(currency).compareTo(yesterdays.get(currency)) > 0) {
             return "poor";
         }
 
-        return null;
+        return "The exchange rate has not changed.";
     }
 
-
-
-
 //    @GetMapping("historical/{date}.json")
-//    List<Rate> getAllHistoricalRates(@PathVariable("date") LocalDate anyDate, @RequestParam String app_id) {
-//        List<Rate> rates = rateService.getAllYesterdaysRates(anyDate, APP_ID);
+//    RateMainDto getHistoricalRates(@PathVariable("date") String anyDate, @RequestParam String app_id) {
+//        RateMainDto rates = rateService.getHistoricalRates(anyDate, APP_ID);
 //        return rates;
 //    }
 }
