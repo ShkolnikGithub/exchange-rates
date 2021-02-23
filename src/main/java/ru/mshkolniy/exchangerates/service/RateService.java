@@ -11,17 +11,10 @@ public interface RateService {
 
 //    list of latest currency exchange rates
     @GetMapping("latest.json")
-    Rate getLatestRates(@RequestParam String app_id);
+    Rate getLatestRates(@RequestParam("app_id") String appId);
 
-//    list of currency exchange rates for yesterday
-    @GetMapping("historical/{date}.json")
-    Rate getYesterdaysRates(@PathVariable("date") String yesterday, @RequestParam String app_id);
-
-    @GetMapping("compare")
-    String compareCurrency(@RequestParam String currency);
-
-//    Optional:
 //    list of exchange rates for any date, starting from 1st January 1999.
     @GetMapping("historical/{date}.json")
-    Rate getHistoricalRates(@PathVariable("date") String anyDate, @RequestParam String app_id);
+    Rate getHistoricalRates(@PathVariable("date") String anyDate,
+                            @RequestParam("app_id") String appId);
 }

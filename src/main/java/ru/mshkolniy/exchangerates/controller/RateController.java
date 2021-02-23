@@ -17,38 +17,53 @@ public class RateController {
     private static final String APP_ID = "1ce73ad6a57744ba8514dd76d877b297";
     private static final LocalDate YESTERDAY = LocalDate.now().minusDays(1L);
 
-    @Autowired
-    private RateService rateService;
+    private final RateService rateService;
 
-    @GetMapping("latest.json")
-    Rate getLatestRates(@RequestParam String app_id) {
-        Rate rates = rateService.getLatestRates(APP_ID);
-        return rates;
+    public RateController(RateService rateService) {
+        this.rateService = rateService;
     }
 
+//    Example request: "http://localhost:8080/today"
+    @GetMapping("today")
+    Rate getLatestRates() {
+        return rateService.getLatestRates(APP_ID);
+    }
+
+//    Example request: "http://localhost:8080/today"
     @GetMapping("yesterday")
-    Rate getYesterdaysRates(@RequestParam String app_id) {
-        Rate rates = rateService.getYesterdaysRates(YESTERDAY.toString(), APP_ID);
-        return rates;
+    Rate getYesterdaysRates() {
+        return rateService.getHistoricalRates(YESTERDAY.toString(), APP_ID);
     }
 
+//    Example request: "http://localhost:8080/compare?currency=EUR"
     @GetMapping("compare")
     String compareCurrency(@RequestParam String currency) {
         Map<String, BigDecimal> todays = rateService.getLatestRates(APP_ID).getRates();
         Map<String, BigDecimal> yesterdays = rateService.getHistoricalRates(YESTERDAY.toString(), APP_ID).getRates();
 
-        if (todays.get(currency.toUpperCase()).compareTo(yesterdays.get(currency.toUpperCase())) < 0) {
+        BigDecimal rubToday = todays.get("RUB");
+        BigDecimal rubYesterday = yesterdays.get("RUB");
+        BigDecimal customToday = todays.get(currency.toUpperCase());
+        BigDecimal customYesterday = yesterdays.get(currency.toUpperCase());
+
+        int rateHigher = rubToday.subtract(customToday).compareTo(rubYesterday.subtract(customYesterday));
+
+        if (rateHigher > 0) {
             return "rich";
-        } else if (todays.get(currency).compareTo(yesterdays.get(currency)) > 0) {
+        }
+
+        if (rateHigher < 0) {
             return "poor";
         }
 
         return "The exchange rate has not changed.";
     }
 
-//    @GetMapping("historical/{date}.json")
-//    RateMainDto getHistoricalRates(@PathVariable("date") String anyDate, @RequestParam String app_id) {
-//        RateMainDto rates = rateService.getHistoricalRates(anyDate, APP_ID);
-//        return rates;
-//    }
+//    Optional:
+//    list of exchange rates for any date, starting from 1st January 1999.
+//    Example request: "http://localhost:8080/historical/2016-10-10"
+    @GetMapping("historical/{date}")
+    Rate getHistoricalRates(@PathVariable("date") String anyDate) {
+        return rateService.getHistoricalRates(anyDate, APP_ID);
+    }
 }
