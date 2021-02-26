@@ -34,15 +34,18 @@ REST API гифок - https://developers.giphy.com/docs/api#quick-start-guide
 Ключевые слова также могут быть любые.
 
 Настройки находятся в файле:
+
 /src/main/resources/ application.properties (доступно после клона проекта)
 
 Запуск:
+```
 git clone https://github.com/ShkolnikGithub/exchange-rates.git
 cd exchange-rates
 gradle clean
 gradle build
 cd build/libs
 java -jar exchange-rates-0.0.1-SNAPSHOT.jar
+```
 
 Далее в браузере открываем: 
 http://localhost:8080/compare
