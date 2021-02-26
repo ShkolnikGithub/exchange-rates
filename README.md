@@ -25,4 +25,27 @@ REST API гифок - https://developers.giphy.com/docs/api#quick-start-guide
 
 Результатом выполнения должен быть репо на GitHub с инструкцией по запуску
 ## Nice to Have
-Сборка и запуск Docker контейнера с этим сервисом
+Сборка и запуск Docker контейнера с этим сервисом.
+
+## Инструкция по запуску:
+
+Перед запуском приложения можем задать настройки (выбрать валюту (поле «rate.base»), которая будет сравниваться с курсом рубля, задать ключевые слова (раздел Keywords) и т.д.).
+Можно указать любой код из перечня поддерживаемых валют, представленного на сайте https://docs.openexchangerates.org/docs/supported-currencies
+Ключевые слова также могут быть любые.
+
+Настройки находятся в файле:
+/src/main/resources/ application.properties (доступно после клона проекта)
+
+Запуск:
+git clone https://github.com/ShkolnikGithub/exchange-rates.git
+cd exchange-rates
+gradle clean
+gradle build
+cd build/libs
+java -jar exchange-rates-0.0.1-SNAPSHOT.jar
+
+Далее в браузере открываем: 
+http://localhost:8080/compare
+
+В зависимости от того, вырос курс или нет, будет показана гифка по ключевому слову rih или broke соответственно.
+Если курс не изменился, то увидим гифку по ключевому слову duck. Такую ситуацию можно смоделировать, задав полю rate.base в application.properties значение  RUB.
