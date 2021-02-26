@@ -2,15 +2,17 @@ package ru.mshkolniy.exchangerates.service;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.mshkolniy.exchangerates.model.gif.AllGifsJson;
 
-@FeignClient(name = "Gif", url = "api.giphy.com/v1/gifs/search")
+@FeignClient(name = "Gifs", url = "${giphy.api.url}")
 public interface GifService {
 
-//    https://api.giphy.com/v1/gifs/search?api_key=pL6IdjWbR4LLUwPaQXHdHcxBURndpDuc&q=rich
-//    @GetMapping("{limit}")
-    @GetMapping()
-    AllGifsJson getGif(@RequestParam("api_key") String apiKey,
-                       @RequestParam("q") String keyword);
+    @GetMapping("search?api_key=${giphy.app.key}&q=${rate.depreciated}&limit=10&offset=0&rating=g&lang=en")
+    AllGifsJson getNegativeGif();
+
+    @GetMapping("search?api_key=${giphy.app.key}&q=${rate.increased}&limit=10&offset=0&rating=g&lang=en")
+    AllGifsJson getPositiveGif();
+
+    @GetMapping("search?api_key=${giphy.app.key}&q=${rate.not.changed}&limit=10&offset=0&rating=g&lang=en")
+    AllGifsJson getEqualGif();
 }

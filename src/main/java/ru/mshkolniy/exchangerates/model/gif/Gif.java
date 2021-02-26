@@ -1,24 +1,19 @@
 package ru.mshkolniy.exchangerates.model.gif;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Gif {
 
+    @Getter
     @JsonProperty("url")
     private String url;
-
-    public String getUrl() {
-        return url;
-    }
-
-    public Gif() {
-
-    }
-
-    public Gif(String url) {
-        this.url = url;
-    }
 
     @Override
     public String toString() {
