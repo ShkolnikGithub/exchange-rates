@@ -1,0 +1,18 @@
+ru/mshkolniy/exchangerates/ExchangeRatesApplication.java
+ ru.mshkolniy.exchangerates.ExchangeRatesApplication
+ru/mshkolniy/exchangerates/model/gif/AllGifsJson.java
+ ru.mshkolniy.exchangerates.model.gif.AllGifsJson
+ru/mshkolniy/exchangerates/service/GifService.java
+ ru.mshkolniy.exchangerates.service.GifService
+ru/mshkolniy/exchangerates/model/gif/ImagesSectionGifsJson.java
+ ru.mshkolniy.exchangerates.model.gif.ImagesSectionGifsJson
+ru/mshkolniy/exchangerates/service/RateService.java
+ ru.mshkolniy.exchangerates.service.RateService
+ru/mshkolniy/exchangerates/model/gif/Gif.java
+ ru.mshkolniy.exchangerates.model.gif.Gif
+ru/mshkolniy/exchangerates/model/gif/DataSectionGifsJson.java
+ ru.mshkolniy.exchangerates.model.gif.DataSectionGifsJson
+ru/mshkolniy/exchangerates/model/Rate.java
+ ru.mshkolniy.exchangerates.model.Rate
+ru/mshkolniy/exchangerates/controller/AppController.java
+ ru.mshkolniy.exchangerates.controller.AppController

@@ -1,5 +1,7 @@
 package ru.mshkolniy.exchangerates.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 @Controller
 @EnableAutoConfiguration
 public class AppController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppController.class);
     public static final LocalDate YESTERDAY = LocalDate.now().minusDays(1L);
     private final RateService rateService;
     private final GifService gifService;
@@ -34,6 +37,7 @@ public class AppController {
 //    Example request: "http://localhost:8080/compare"
     @RequestMapping(value = "/compare", method = RequestMethod.GET)
     public String compareCurrency(@Value("${rate.base}") String currency) {
+        LOGGER.debug("Executing method compareCurrency(). Currency is " + currency);
         Map<String, BigDecimal> todays = rateService.getLatestRates().getRates();
         Map<String, BigDecimal> yesterdays = rateService.getHistoricalRates(YESTERDAY.toString()).getRates();
 
@@ -49,6 +53,7 @@ public class AppController {
 
 //    get a list with links to all the GIFs
     public List<Gif> getGifList(int rateHigher) {
+        LOGGER.debug("Executing method getGifList(). RateHigher is " + rateHigher);
         return getAllGifsJson(rateHigher).getMainData()
                 .stream().map(DataSectionGifsJson::getImages).collect(Collectors.toList())
                 .stream().map(ImagesSectionGifsJson::getGif).collect(Collectors.toList());
@@ -56,6 +61,7 @@ public class AppController {
 
 //    get a page in JSON format depending on the exchange rate
     public AllGifsJson getAllGifsJson(int rateHigher) {
+        LOGGER.debug("Executing method getAllGifsJson(). RateHigher is " + rateHigher);
         return rateHigher > 0 ? gifService.getPositiveGif()
                 : rateHigher < 0 ? gifService.getNegativeGif()
                 : gifService.getEqualGif();
@@ -63,6 +69,7 @@ public class AppController {
 
 //    random selection of gifs from the general list
     public int getRandomGif(int size) {
+        LOGGER.debug("Executing method getRandomGif(). Size is " + size);
         return new Random().nextInt(size);
     }
 }
