@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import ru.mshkolniy.exchangerates.model.gif.AllGifsJson;
@@ -34,19 +35,21 @@ public class AppController {
         this.gifService = gifService;
     }
 
-//    Example request: "http://localhost:8080/compare"
-    @RequestMapping(value = "/compare", method = RequestMethod.GET)
-    public String compareCurrency(@Value("${rate.base}") String currency) {
-        LOGGER.debug("Executing method compareCurrency(). Currency is " + currency);
-        Map<String, BigDecimal> todays = rateService.getLatestRates().getRates();
-        Map<String, BigDecimal> yesterdays = rateService.getHistoricalRates(YESTERDAY.toString()).getRates();
+//    Example request: "http://localhost:8080/compare/USD"
+    @RequestMapping(value = "/compare/{custom}", method = RequestMethod.GET)
+    public String compareCurrency(@Value("${rate.base}") String baseCurrency,
+                                  @PathVariable String custom) {
+        LOGGER.debug("Executing method compareCurrency(). Custom currency is " + custom);
+        Map<String, BigDecimal> allRatesToday = rateService.getLatestRates().getRates();
+        Map<String, BigDecimal> allRatesYesterday = rateService.getHistoricalRates(YESTERDAY.toString()).getRates();
 
-        BigDecimal rubToday = todays.get("RUB");
-        BigDecimal rubYesterday = yesterdays.get("RUB");
-        BigDecimal customToday = todays.get(currency.toUpperCase());
-        BigDecimal customYesterday = yesterdays.get(currency.toUpperCase());
+        BigDecimal baseCurrencyToday = allRatesToday.get(baseCurrency);
+        BigDecimal baseCurrencyYesterday = allRatesYesterday.get(baseCurrency);
+        BigDecimal customCurrencyToday = allRatesToday.get(custom.toUpperCase());
+        BigDecimal customCurrencyYesterday = allRatesYesterday.get(custom.toUpperCase());
 
-        int rateHigher = rubToday.subtract(customToday).compareTo(rubYesterday.subtract(customYesterday));
+        int rateHigher = baseCurrencyToday.subtract(customCurrencyToday)
+                .compareTo(baseCurrencyYesterday.subtract(customCurrencyYesterday));
         List<Gif> gifList = getGifList(rateHigher);
         return "redirect:" + gifList.get(getRandomGif(gifList.size()));
     }

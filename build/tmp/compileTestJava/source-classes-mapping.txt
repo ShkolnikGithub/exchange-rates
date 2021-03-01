@@ -1,0 +1,4 @@
+ru/mshkolniy/exchangerates/ExchangeRatesApplicationTests.java
+ ru.mshkolniy.exchangerates.ExchangeRatesApplicationTests
+ru/mshkolniy/exchangerates/controller/AppControllerTest.java
+ ru.mshkolniy.exchangerates.controller.AppControllerTest

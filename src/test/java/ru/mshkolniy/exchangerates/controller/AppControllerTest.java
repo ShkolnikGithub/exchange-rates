@@ -26,7 +26,7 @@ public class AppControllerTest {
 
     @Test
     void getGifRedirectTest() throws Exception {
-        this.mockMvc.perform(get("/compare"))
+        this.mockMvc.perform(get("/compare/USD"))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection());
     }
